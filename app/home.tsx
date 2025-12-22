@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, StatusBar, Alert } from 'react-native';
 import { Plus } from 'lucide-react-native';
 import { router } from 'expo-router';
@@ -8,8 +8,33 @@ import EmptyState from '../components/EmptyState';
 import CopyBusinessSheet from '../components/CopyBusinessSheet';
 // import Clipboard from '@react-native-clipboard/clipboard';
 import * as Clipboard from 'expo-clipboard';
+import { Settings } from 'lucide-react-native';
+import Tooltip from '../components/Tooltip';
+import { useFirstTimeTooltip } from '../hooks/useFirstTimeTooltip';
 
 export default function HomeScreen() {
+    const [cardLayout, setCardLayout] = useState({
+      top: 0,
+      left: 0,
+      width: 0,
+      height: 0
+    });
+    const cardRef = useRef<View>(null);
+
+    const { shouldShow, dismissTooltip } = useFirstTimeTooltip('BUSINESS_CARD');
+
+    const handleCardLayout = () => {
+      if (cardRef.current) {
+        cardRef.current.measure((x, y, width, height, pageX, pageY) => {
+          setCardLayout({
+            top: pageY,
+            left: pageX,
+            width,
+            height
+          });
+        });
+      }
+    };
   const [businesses, setBusinesses] = useState<Business[]>([
     {
       id: '1',
@@ -74,13 +99,22 @@ export default function HomeScreen() {
       {/* Top Bar */}
       <View style={styles.topBar}>
         <Text style={styles.title}>My Businesses</Text>
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={handleAddBusiness}
-          activeOpacity={0.7}
-        >
-          <Plus size={24} color="#6366F1" strokeWidth={2.5} />
-        </TouchableOpacity>
+        <View style={styles.topBarActions}>
+            <TouchableOpacity
+              style={styles.settingsButton}
+              onPress={() => router.push('/settings')}
+              activeOpacity={0.7}
+            >
+              <Settings size={22} color="#6B7280" strokeWidth={2} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.addButton}
+              onPress={handleAddBusiness}
+              activeOpacity={0.7}
+            >
+              <Plus size={24} color="#6366F1" strokeWidth={2.5} />
+            </TouchableOpacity>
+        </View>
       </View>
 
       {/* Content */}
@@ -101,6 +135,17 @@ export default function HomeScreen() {
                 onCopy={handleCopy}
               />
             ))}
+            {/* First-time tooltip for business card */}
+            {cardLayout.width > 0 && (
+              <Tooltip
+                visible={shouldShow}
+                title="Your Business Card"
+                message="Tap any card to view details, or use the buttons below to quickly edit or copy business information."
+                targetPosition={cardLayout}
+                arrowDirection="up"
+                onDismiss={dismissTooltip}
+              />
+            )}
             <TouchableOpacity onPress={() => router.push('/demo-assisted-fill')}>
               <Text>Try Assisted Fill Demo</Text>
             </TouchableOpacity>
@@ -135,6 +180,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
     borderBottomColor: '#E5E7EB',
+  },
+  topBarActions: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  settingsButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#F3F4F6',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   title: {
     fontSize: 24,

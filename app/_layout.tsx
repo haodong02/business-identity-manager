@@ -15,6 +15,7 @@ export default function RootLayout() {
       <Stack.Screen name="add-business" />
       <Stack.Screen name="edit-business" />
       <Stack.Screen name="demo-assisted-fill" />
+      <Stack.Screen name="settings" />
     </Stack>
   );
 }

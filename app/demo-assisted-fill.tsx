@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -12,6 +12,8 @@ import { ArrowLeft } from 'lucide-react-native';
 import { router } from 'expo-router';
 import AssistedFillPanel from '../components/AssistedFillPanel';
 import FloatingFillButton from '../components/FloatingFillButton';
+import Tooltip from '../components/Tooltip';
+import { useFirstTimeTooltip } from '../hooks/useFirstTimeTooltip';
 
 export default function DemoAssistedFillScreen() {
   const [showPanel, setShowPanel] = useState(false);
@@ -25,6 +27,37 @@ export default function DemoAssistedFillScreen() {
     email: '',
     phone: '',
   });
+
+  const [buttonLayout, setButtonLayout] = useState({
+      top: 0,
+      left: 0,
+      width: 0,
+      height: 0
+  });
+
+  const buttonRef = useRef<View>(null);
+
+  const { shouldShow, dismissTooltip } = useFirstTimeTooltip('FLOATING_BUTTON');
+
+  // Measure button position when it's rendered
+  const handleButtonLayout = () => {
+      if (buttonRef.current) {
+        buttonRef.current.measure((x, y, width, height, pageX, pageY) => {
+          setButtonLayout({
+            top: pageY,
+            left: pageX,
+            width,
+            height
+          });
+        });
+      }
+  };
+
+//   useEffect(() => {
+//     if (shouldShow) {
+//       handleButtonLayout();
+//     }
+//   };
 
   // Mock businesses data
   const businesses = [
@@ -202,14 +235,31 @@ export default function DemoAssistedFillScreen() {
         </View>
       </ScrollView>
 
-      {/* Floating Button */}
-      <FloatingFillButton
-        visible={true}
-        onPress={() => {
-          setDetectedField(null);
-          setShowPanel(true);
-        }}
-      />
+        {/* First-time tooltip */}
+        {buttonLayout.width > 0 && (
+          <Tooltip
+            visible={shouldShow}
+            title="Quick Fill Button"
+            message="Tap here if autofill doesn't appear. This button gives you quick access to fill any form field with your business information."
+            targetPosition={buttonLayout}
+            arrowDirection="down"
+            onDismiss={dismissTooltip}
+          />
+        )}
+
+        <View
+          ref={buttonRef}
+          onLayout={handleButtonLayout}
+        >
+          {/* Floating Button */}
+          <FloatingFillButton
+            visible={true}
+            onPress={() => {
+              setDetectedField(null);
+              setShowPanel(true);
+            }}
+          />
+        </View>
 
       {/* Assisted Fill Panel */}
       <AssistedFillPanel
@@ -244,6 +294,11 @@ const styles = StyleSheet.create({
     height: 44,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  buttonContainer: {
+      position: 'absolute',
+      bottom: 30,
+      right: 20,
   },
   headerTitle: {
     fontSize: 18,
