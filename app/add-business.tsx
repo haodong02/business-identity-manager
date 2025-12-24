@@ -17,6 +17,7 @@ import Input from '../components/Input';
 import Dropdown from '../components/Dropdown';
 import Toggle from '../components/Toggle';
 import Button from '../components/Button';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function AddBusinessScreen() {
   const [formData, setFormData] = useState<BusinessFormData>({
@@ -47,10 +48,7 @@ export default function AddBusinessScreen() {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
+    <SafeAreaView style={styles.container} edges={['top']}>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
 
       {/* Header */}
@@ -198,7 +196,7 @@ export default function AddBusinessScreen() {
       <View style={styles.stickyButtonContainer}>
         <Button title="Save Business" onPress={handleSave} variant="primary" />
       </View>
-    </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 

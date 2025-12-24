@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, StatusBar } from 'react-native';
 import { Briefcase, CheckCircle2, FileText, ArrowRight } from 'lucide-react-native';
 import { router } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function SplashScreen() {
   const handleGetStarted = () => {
@@ -9,7 +10,7 @@ export default function SplashScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       <StatusBar barStyle="light-content" backgroundColor="#667EEA" />
 
       {/* Logo Section */}
@@ -49,7 +50,7 @@ export default function SplashScreen() {
           No account required · Data stays on your phone
         </Text>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -59,7 +60,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#667EEA',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingTop: 60,
     paddingBottom: 40,
     paddingHorizontal: 40,
   },

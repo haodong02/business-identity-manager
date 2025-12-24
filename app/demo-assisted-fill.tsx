@@ -14,6 +14,7 @@ import AssistedFillPanel from '../components/AssistedFillPanel';
 import FloatingFillButton from '../components/FloatingFillButton';
 import Tooltip from '../components/Tooltip';
 import { useFirstTimeTooltip } from '../hooks/useFirstTimeTooltip';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function DemoAssistedFillScreen() {
   const [showPanel, setShowPanel] = useState(false);
@@ -99,7 +100,7 @@ export default function DemoAssistedFillScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
 
       {/* Header */}
@@ -269,7 +270,7 @@ export default function DemoAssistedFillScreen() {
         onClose={() => setShowPanel(false)}
         onSelectField={handleSelectField}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 

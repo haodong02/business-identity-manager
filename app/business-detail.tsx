@@ -6,6 +6,7 @@ import { Business } from '../types/Business';
 import CopyBusinessSheet from '../components/CopyBusinessSheet';
 // import Clipboard from '@react-native-clipboard/clipboard';
 import * as Clipboard from 'expo-clipboard'
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function BusinessDetailScreen() {
   const { id } = useLocalSearchParams();
@@ -91,7 +92,7 @@ export default function BusinessDetailScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
 
       {/* Header */}
@@ -213,7 +214,7 @@ export default function BusinessDetailScreen() {
         onClose={() => setShowCopySheet(false)}
         onCopy={handleCopyToClipboard}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 

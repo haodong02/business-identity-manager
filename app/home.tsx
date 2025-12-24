@@ -11,6 +11,7 @@ import * as Clipboard from 'expo-clipboard';
 import { Settings } from 'lucide-react-native';
 import Tooltip from '../components/Tooltip';
 import { useFirstTimeTooltip } from '../hooks/useFirstTimeTooltip';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function HomeScreen() {
     const [cardLayout, setCardLayout] = useState({
@@ -93,7 +94,7 @@ export default function HomeScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
 
       {/* Top Bar */}
@@ -161,7 +162,7 @@ export default function HomeScreen() {
           onCopy={handleCopyToClipboard}
           />
       )}
-    </View>
+    </SafeAreaView>
   );
 }
 

@@ -4,6 +4,7 @@ import { Shield, Edit3, Brain } from 'lucide-react-native';
 import { router } from 'expo-router';
 import PermissionCard from '../components/PermissionCard';
 import Button from '../components/Button';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function PermissionEducationScreen() {
   const [assistiveFillEnabled, setAssistiveFillEnabled] = useState(true);
@@ -19,7 +20,7 @@ export default function PermissionEducationScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <StatusBar barStyle="dark-content" backgroundColor="#F9FAFB" />
 
       {/* Header */}
@@ -77,7 +78,7 @@ export default function PermissionEducationScreen() {
           style={styles.skipButton}
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
