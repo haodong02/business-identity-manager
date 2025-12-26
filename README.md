@@ -1,50 +1,68 @@
-# Welcome to your Expo app 👋
+# Business Identity Manager
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A React Native (Expo) application to help Malaysian businesses manage their identity profiles and autofill them into E-invoicing and other forms on Android.
 
-## Get started
+## Features
 
-1. Install dependencies
+*   **Manage Profiles:** Store multiple business profiles (Name, BRN, TIN, SST, Address, etc.).
+*   **Local Storage:** Data is encrypted and stored locally on your device.
+*   **Android Autofill Service:** Integrates natively with the Android OS to autofill forms in browsers and other apps.
+*   **Assisted Fill:** Floating overlay for apps that don't support standard autofill.
 
-   ```bash
-   npm install
-   ```
+## Development Setup
 
-2. Start the app
+This project uses **Expo Prebuild** (CNG) to support the custom Android Native Autofill service. You cannot use the standard "Expo Go" app to test the native autofill features.
 
-   ```bash
-   npx expo start
-   ```
+### Prerequisites
 
-In the output, you'll find options to open the app in a
+*   Node.js (LTS)
+*   Java Development Kit (JDK 17)
+*   Android Studio & Android SDK
+*   An Android Device or Emulator
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+### getting Started
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/haodong02/business-identity-manager.git
+    cd business-identity-manager
+    git checkout Pre-Merge
+    ```
 
-## Get a fresh project
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
 
-When you're ready, run:
+3.  **Build and Run on Android:**
+    Since this project has custom native code, you must build the development client:
 
-```bash
-npm run reset-project
-```
+    ```bash
+    npx expo run:android
+    ```
+    *This command will compile the Kotlin code and install the app on your connected device/emulator.*
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+4.  **Start the Metro Bundler:**
+    The previous command usually starts this automatically, but if not:
+    ```bash
+    npx expo start --dev-client
+    ```
 
-## Learn more
+### Testing Autofill
 
-To learn more about developing your project with Expo, look at the following resources:
+1.  Open the app and add a Business Profile.
+2.  Go to **Settings**.
+3.  Tap **Enable System Autofill**.
+4.  In the Android System Settings that open, select **Business Identity Manager** as your autofill service.
+5.  Open Chrome or another app with a form.
+6.  Tap a field (e.g., "Name" or "Address"). You should see the autofill suggestion.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Project Structure
 
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+*   `app/`: Expo Router screens.
+*   `components/`: Reusable UI components.
+*   `services/`: Logic for storage and data management.
+*   `modules/`: Interface for Native Modules.
+*   `android/`: **(Generated)** Native Android project containing the Kotlin Autofill Service.
+    *   `src/main/java/com/pcsm/businessidentitymanager/BusinessAutofillService.kt`: The core autofill logic.
+    *   `src/main/java/com/pcsm/businessidentitymanager/BusinessDataModule.kt`: Bridge to save data from JS to Native.
