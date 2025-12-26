@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Business } from '../types/Business';
+import BusinessDataModule from '../modules/BusinessDataModule';
 
 const STORAGE_KEY = '@business_identity_manager_businesses';
 
@@ -83,7 +84,17 @@ export const StorageService = {
    */
   saveBusinesses: async (businesses: Business[]): Promise<void> => {
     try {
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(businesses));
+      const jsonString = JSON.stringify(businesses);
+      await AsyncStorage.setItem(STORAGE_KEY, jsonString);
+      
+      // Sync to Native Module for Autofill Service
+      if (BusinessDataModule) {
+          try {
+            BusinessDataModule.saveBusinesses(jsonString);
+          } catch (nativeError) {
+              console.warn("Failed to sync with native autofill service", nativeError);
+          }
+      }
     } catch (e) {
       console.error('Error saving businesses to storage', e);
     }
@@ -95,6 +106,9 @@ export const StorageService = {
   clearAll: async (): Promise<void> => {
       try {
           await AsyncStorage.removeItem(STORAGE_KEY);
+          if (BusinessDataModule) {
+              BusinessDataModule.clearBusinesses();
+          }
       } catch(e) {
           console.error('Error clearing storage', e);
       }

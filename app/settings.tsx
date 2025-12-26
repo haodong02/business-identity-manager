@@ -8,6 +8,7 @@ import {
   StatusBar,
   Alert,
   Share,
+  Platform,
 } from 'react-native';
 import {
   ArrowLeft,
@@ -18,10 +19,12 @@ import {
   Shield,
   Edit3,
   Brain,
+  Settings as SettingsIcon,
 } from 'lucide-react-native';
 import { router } from 'expo-router';
 import * as Clipboard from 'expo-clipboard';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import BusinessDataModule from '../modules/BusinessDataModule';
 
 interface Business {
   id: string;
@@ -57,6 +60,18 @@ export default function SettingsScreen() {
         })),
       ]
     );
+  };
+
+  const handleOpenAutofillSettings = () => {
+      if (Platform.OS === 'android') {
+          if (BusinessDataModule && BusinessDataModule.openAutofillSettings) {
+             BusinessDataModule.openAutofillSettings();
+          } else {
+              Alert.alert('Not Supported', 'Native module not found. Please rebuild the app.');
+          }
+      } else {
+          Alert.alert('Not Supported', 'System autofill settings are only available on Android.');
+      }
   };
 
   const handleToggleAutofill = () => {
@@ -176,6 +191,26 @@ export default function SettingsScreen() {
         {/* Autofill Settings Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Autofill Settings</Text>
+
+          {/* System Autofill Toggle */}
+          <TouchableOpacity
+            style={styles.settingCard}
+            onPress={handleOpenAutofillSettings}
+            activeOpacity={0.7}
+          >
+            <View style={styles.settingLeft}>
+              <View style={[styles.settingIcon, { backgroundColor: '#F3F4F6' }]}>
+                <SettingsIcon size={20} color="#4B5563" strokeWidth={2} />
+              </View>
+              <View style={styles.settingText}>
+                <Text style={styles.settingLabel}>Enable System Autofill</Text>
+                <Text style={styles.settingDescription}>
+                  Open Android settings to enable this app as your autofill service
+                </Text>
+              </View>
+            </View>
+            <ChevronRight size={20} color="#9CA3AF" strokeWidth={2} />
+          </TouchableOpacity>
 
           {/* Autofill Suggestions Toggle */}
           <View style={styles.settingCard}>
